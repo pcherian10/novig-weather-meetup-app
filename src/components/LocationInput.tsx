@@ -22,7 +22,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
     <Box sx={{ mb: 2 }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center' }}>
         <TextField
-          fullWidth
+          
           label="Event Location"
           variant="outlined"
           value={location}

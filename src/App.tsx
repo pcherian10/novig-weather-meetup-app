@@ -11,6 +11,7 @@ import TimeRangePicker from './components/TimeRangePicker';
 import WeatherDisplay from './components/WeatherDisplay';
 import { WeatherData, WeatherMessage } from './types';
 import axios from 'axios';
+import './App.scss';
 
 function App() {
   const [location, setLocation] = useState<string>('');

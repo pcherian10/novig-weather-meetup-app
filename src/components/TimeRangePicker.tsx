@@ -21,7 +21,7 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = ({
 
   return (
     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-      <FormControl fullWidth>
+      <FormControl>
         <InputLabel>Start Time</InputLabel>
         <Select
           value={startTime}
