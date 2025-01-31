@@ -15,7 +15,7 @@ import './App.scss';
 
 function App() {
   const [location, setLocation] = useState<string>('');
-  const [dayOfWeek, setDayOfWeek] = useState<string>('friday');
+  const [dayOfWeek, setDayOfWeek] = useState<string>('Friday');
   const [timeOfDay, setTimeOfDay] = useState<string>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
@@ -24,13 +24,13 @@ function App() {
   });
 
   const daysOfWeek = [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
 
   const timesOfDay = [
