@@ -8,18 +8,17 @@ import {
 } from '@mui/material';
 import LocationInput from './components/LocationInput';
 import WeatherDisplay from './components/WeatherDisplay';
-import { WeatherData, WeatherMessage } from './types';
+import { WeatherData, WeatherMessage, TimeOfDay, TIME_RANGES } from './types';
 import axios from 'axios';
 import './App.scss';
 
 function App() {
   const [location, setLocation] = useState<string>('');
   const [dayOfWeek, setDayOfWeek] = useState<string>('Friday');
-  const [timeOfDay, setTimeOfDay] = useState<string>('afternoon');
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
-    type: 'success',
-    message: 'Enter a location to see the weather forecast',
+    text: '',
   });
 
   const daysOfWeek = [
@@ -32,43 +31,48 @@ function App() {
     'Sunday',
   ];
 
-  const timesOfDay = [
-    { value: 'morning', label: 'Morning (9-12)', range: { start: '09:00', end: '12:00' } },
-    { value: 'afternoon', label: 'Afternoon (12-5)', range: { start: '12:00', end: '17:00' } },
-    { value: 'evening', label: 'Evening (5-8)', range: { start: '17:00', end: '20:00' } },
-  ];
+  const timesOfDay: TimeOfDay[] = ['morning', 'afternoon', 'evening'];
+
+  const getHourlyDataForTimeRange = (hours: any[], start: number, end: number) => {
+    return hours
+      .filter((hour: any) => {
+        const hourNum = parseInt(hour.datetime.split(':')[0]);
+        return hourNum >= start && hourNum <= end;
+      })
+      .map((hour: any) => ({
+        hour: hour.datetime,
+        temperature: hour.temp,
+        humidity: hour.humidity
+      }));
+  };
 
   const handleLocationSubmit = async (submittedLocation: string) => {
-    if (!submittedLocation) return;
-    
     try {
       const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
       const response = await axios.get(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
           submittedLocation
-        )}/next7days?unitGroup=us&key=${API_KEY}`
+        )}/next7days?unitGroup=us&include=hours&key=${API_KEY}`
       );
-
-
 
       const processedData: WeatherData[] = response.data.days.map((day: any) => ({
         date: day.datetime,
         temperature: day.temp,
-        conditions: day.conditions,
-        icon: day.icon,
-        precipitationChance: day.precipprob || 0,
-        humidity: day.humidity || 0,
+        humidity: day.humidity,
+        morningData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.morning.start, TIME_RANGES.morning.end),
+        afternoonData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.afternoon.start, TIME_RANGES.afternoon.end),
+        eveningData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.evening.start, TIME_RANGES.evening.end)
       }));
 
       setWeatherData(processedData);
+      setLocation(submittedLocation);
       setWeatherMessage({
-        type: 'success',
-        message: 'Weather data loaded successfully',
+        text: response.data.description || 'Weather data retrieved successfully',
       });
     } catch (error) {
+      console.error('Error fetching weather data:', error);
       setWeatherMessage({
-        type: 'error',
-        message: 'Failed to fetch weather data. Please try again.',
+        text: 'Error fetching weather data. Please try again.',
       });
     }
   };
@@ -100,12 +104,12 @@ function App() {
           <FormControl>
             <Select
               value={timeOfDay}
-              onChange={(e) => setTimeOfDay(e.target.value)}
+              onChange={(e) => setTimeOfDay(e.target.value as TimeOfDay)}
               displayEmpty
             >
               {timesOfDay.map((time) => (
-                <MenuItem key={time.value} value={time.value}>
-                  {time.label}
+                <MenuItem key={time} value={time}>
+                  {time.charAt(0).toUpperCase() + time.slice(1)}
                 </MenuItem>
               ))}
             </Select>
@@ -117,7 +121,7 @@ function App() {
         <div className="chart-section">
           <div className="chart-header">
             <Typography variant="h6">This {dayOfWeek}</Typography>
-            <div className="weather-icon">
+            {/* <div className="weather-icon">
               {weatherData[0] && (
                 <>
                   <img
@@ -129,15 +133,19 @@ function App() {
                   <Typography>{weatherData[0].temperature}°F</Typography>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
-          <WeatherDisplay weatherData={weatherData[0]} />
+          <WeatherDisplay 
+            weatherData={weatherData} 
+            selectedDay={dayOfWeek}
+            timeOfDay={timeOfDay}
+          />
         </div>
 
         <div className="chart-section">
           <div className="chart-header">
             <Typography variant="h6">Next {dayOfWeek}</Typography>
-            <div className="weather-icon">
+            {/* <div className="weather-icon">
               {weatherData[7] && (
                 <>
                   <img
@@ -149,15 +157,19 @@ function App() {
                   <Typography>{weatherData[7].temperature}°F</Typography>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
-          <WeatherDisplay weatherData={weatherData[7]} />
+          <WeatherDisplay 
+            weatherData={weatherData} 
+            selectedDay={dayOfWeek}
+            timeOfDay={timeOfDay}
+          />
         </div>
       </div>
 
-      {weatherMessage.type === 'error' && (
+      {weatherMessage.text && (
         <Box mt={2}>
-          <Typography color="error">{weatherMessage.message}</Typography>
+          <Typography>{weatherMessage.text}</Typography>
         </Box>
       )}
     </div>
