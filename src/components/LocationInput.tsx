@@ -1,22 +1,38 @@
-import React from 'react';
-import { TextField, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Box, IconButton } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface LocationInputProps {
-  value: string;
-  onChange: (location: string) => void;
+  location: string;
+  onLocationChange: (location: string) => void;
+  onLocationSubmit: (location: string) => void;
 }
 
-const LocationInput: React.FC<LocationInputProps> = ({ value, onChange }) => {
+const LocationInput: React.FC<LocationInputProps> = ({
+  location,
+  onLocationChange,
+  onLocationSubmit,
+}) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onLocationSubmit(location);
+  };
+
   return (
     <Box sx={{ mb: 2 }}>
-      <TextField
-        fullWidth
-        label="Event Location"
-        variant="outlined"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Enter location (e.g., Central Park, New York)"
-      />
+      <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center' }}>
+        <TextField
+          fullWidth
+          label="Event Location"
+          variant="outlined"
+          value={location}
+          onChange={(e) => onLocationChange(e.target.value)}
+          placeholder="Enter location (e.g., Central Park, New York)"
+        />
+        <IconButton type="submit" sx={{ ml: 1 }} aria-label="search">
+          <SearchIcon />
+        </IconButton>
+      </form>
     </Box>
   );
 };

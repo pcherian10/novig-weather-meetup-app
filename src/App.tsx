@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Container,
   Box,
   Typography,
-  Paper,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
-  Button,
 } from '@mui/material';
 import LocationInput from './components/LocationInput';
 import TimeRangePicker from './components/TimeRangePicker';
@@ -19,8 +15,7 @@ import axios from 'axios';
 function App() {
   const [location, setLocation] = useState<string>('');
   const [dayOfWeek, setDayOfWeek] = useState<string>('friday');
-  const [startTime, setStartTime] = useState<string>('14:00');
-  const [endTime, setEndTime] = useState<string>('18:00');
+  const [timeOfDay, setTimeOfDay] = useState<string>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
     type: 'success',
@@ -28,122 +23,142 @@ function App() {
   });
 
   const daysOfWeek = [
-    'sunday',
     'monday',
     'tuesday',
     'wednesday',
     'thursday',
     'friday',
     'saturday',
+    'sunday',
   ];
 
-  const fetchWeatherData = async () => {
-    if (!location) return;
+  const timesOfDay = [
+    { value: 'morning', label: 'Morning (9-12)', range: { start: '09:00', end: '12:00' } },
+    { value: 'afternoon', label: 'Afternoon (12-5)', range: { start: '12:00', end: '17:00' } },
+    { value: 'evening', label: 'Evening (5-8)', range: { start: '17:00', end: '20:00' } },
+  ];
 
+  const handleLocationSubmit = async (submittedLocation: string) => {
+    if (!submittedLocation) return;
+    
     try {
       const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
       const response = await axios.get(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
-          location
+          submittedLocation
         )}/next7days?unitGroup=us&key=${API_KEY}`
       );
 
       const processedData: WeatherData[] = response.data.days.map((day: any) => ({
-        temp: day.temp,
-        humidity: day.humidity,
-        description: day.conditions,
-        windSpeed: day.windspeed,
-        datetime: day.datetime,
+        date: day.datetime,
+        temperature: day.temp,
+        conditions: day.conditions,
+        icon: day.icon,
+        precipitationChance: day.precipprob || 0,
+        humidity: day.humidity || 0,
       }));
 
       setWeatherData(processedData);
-      
-      // Generate weather message based on conditions
-      const nextFridayData = processedData.find(
-        (data) => new Date(data.datetime).getDay() === 5
-      );
-
-      if (nextFridayData) {
-        if (nextFridayData.temp >= 60 && nextFridayData.temp <= 75) {
-          setWeatherMessage({
-            type: 'success',
-            message: 'Nice day for a meetup! Temperature is perfect.',
-          });
-        } else if (nextFridayData.humidity > 75) {
-          setWeatherMessage({
-            type: 'warning',
-            message: 'High chance of rain. Consider indoor backup plans.',
-          });
-        } else if (nextFridayData.windSpeed > 15) {
-          setWeatherMessage({
-            type: 'warning',
-            message: 'Windy conditions expected. Some activities might be affected.',
-          });
-        } else {
-          setWeatherMessage({
-            type: 'success',
-            message: 'Weather looks acceptable for outdoor activities.',
-          });
-        }
-      }
+      setWeatherMessage({
+        type: 'success',
+        message: 'Weather data loaded successfully',
+      });
     } catch (error) {
       setWeatherMessage({
         type: 'error',
-        message: 'Error fetching weather data. Please try again.',
+        message: 'Failed to fetch weather data. Please try again.',
       });
     }
   };
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Weather Meetup Planner
-        </Typography>
-        
-        <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-          <LocationInput value={location} onChange={setLocation} />
-          
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Day of Week</InputLabel>
+    <div className="App">
+      <header className="header">
+        <div className="location-picker">
+          <LocationInput
+            location={location}
+            onLocationChange={setLocation}
+            onLocationSubmit={handleLocationSubmit}
+          />
+        </div>
+        <div className="datetime-picker">
+          <FormControl>
             <Select
               value={dayOfWeek}
-              label="Day of Week"
               onChange={(e) => setDayOfWeek(e.target.value)}
+              displayEmpty
             >
               {daysOfWeek.map((day) => (
-                <MenuItem key={day} value={day} sx={{ textTransform: 'capitalize' }}>
-                  {day}
+                <MenuItem key={day} value={day}>
+                  {day.charAt(0).toUpperCase() + day.slice(1)}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+          <FormControl>
+            <Select
+              value={timeOfDay}
+              onChange={(e) => setTimeOfDay(e.target.value)}
+              displayEmpty
+            >
+              {timesOfDay.map((time) => (
+                <MenuItem key={time.value} value={time.value}>
+                  {time.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      </header>
 
-          <TimeRangePicker
-            startTime={startTime}
-            endTime={endTime}
-            onStartTimeChange={setStartTime}
-            onEndTimeChange={setEndTime}
-          />
+      <div className="charts-container">
+        <div className="chart-section">
+          <div className="chart-header">
+            <Typography variant="h6">This {dayOfWeek}</Typography>
+            <div className="weather-icon">
+              {weatherData[0] && (
+                <>
+                  <img
+                    src={`/weather-icons/${weatherData[0].icon}.svg`}
+                    alt={weatherData[0].conditions}
+                    width="24"
+                    height="24"
+                  />
+                  <Typography>{weatherData[0].temperature}°F</Typography>
+                </>
+              )}
+            </div>
+          </div>
+          <WeatherDisplay weatherData={weatherData[0]} />
+        </div>
 
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={fetchWeatherData}
-            disabled={!location}
-          >
-            Check Weather
-          </Button>
-        </Paper>
+        <div className="chart-section">
+          <div className="chart-header">
+            <Typography variant="h6">Next {dayOfWeek}</Typography>
+            <div className="weather-icon">
+              {weatherData[7] && (
+                <>
+                  <img
+                    src={`/weather-icons/${weatherData[7].icon}.svg`}
+                    alt={weatherData[7].conditions}
+                    width="24"
+                    height="24"
+                  />
+                  <Typography>{weatherData[7].temperature}°F</Typography>
+                </>
+              )}
+            </div>
+          </div>
+          <WeatherDisplay weatherData={weatherData[7]} />
+        </div>
+      </div>
 
-        {weatherData.length > 0 && (
-          <WeatherDisplay
-            weatherData={weatherData}
-            message={weatherMessage}
-          />
-        )}
-      </Box>
-    </Container>
+      {weatherMessage.type === 'error' && (
+        <Box mt={2}>
+          <Typography color="error">{weatherMessage.message}</Typography>
+        </Box>
+      )}
+    </div>
   );
 }
 

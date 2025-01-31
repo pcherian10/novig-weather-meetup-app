@@ -1,9 +1,11 @@
 export interface WeatherData {
-  temp: number;
-  humidity: number;
-  description: string;
+  date: string;
+  temperature: number;
+  conditions: string;
+  icon: string;
   windSpeed: number;
-  datetime: string;
+  precipitationChance: number;
+  humidity: number;
 }
 
 export interface EventSettings {
