@@ -19,17 +19,16 @@ const LocationInput: React.FC<LocationInputProps> = ({
   };
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center' }}>
+    <Box>
+      <form onSubmit={handleSubmit}>
         <TextField
-          
           label="Event Location"
           variant="outlined"
           value={location}
           onChange={(e) => onLocationChange(e.target.value)}
           placeholder="Enter location (e.g., Central Park, New York)"
         />
-        <IconButton type="submit" sx={{ ml: 1 }} aria-label="search">
+        <IconButton type="submit" aria-label="search">
           <SearchIcon />
         </IconButton>
       </form>

@@ -19,23 +19,38 @@ $background-white: #fff;
 
   .header {
     @include flex-center;
+    justify-content: flex-start;
     gap: 20px;
     padding: 20px 0;
     border-bottom: 1px solid $border-color;
     margin-bottom: 30px;
+
+    & > * {
+      display: flex;
+      align-items: center;
+    }
+    .location-picker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 200px;
+
+      form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  
+    .datetime-picker {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-grow: 1;
+    }
   }
 
-  .location-picker {
-    @include flex-center;
-    gap: 8px;
-    min-width: 200px;
-  }
-
-  .datetime-picker {
-    @include flex-center;
-    gap: 16px;
-    flex-grow: 1;
-  }
+  
 
   .charts-container {
     display: flex;
