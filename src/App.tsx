@@ -7,7 +7,6 @@ import {
   MenuItem,
 } from '@mui/material';
 import LocationInput from './components/LocationInput';
-import TimeRangePicker from './components/TimeRangePicker';
 import WeatherDisplay from './components/WeatherDisplay';
 import { WeatherData, WeatherMessage } from './types';
 import axios from 'axios';
@@ -49,6 +48,8 @@ function App() {
           submittedLocation
         )}/next7days?unitGroup=us&key=${API_KEY}`
       );
+
+
 
       const processedData: WeatherData[] = response.data.days.map((day: any) => ({
         date: day.datetime,
