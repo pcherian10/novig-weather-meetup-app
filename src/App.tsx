@@ -21,25 +21,6 @@ function App() {
     text: '',
   });
 
-  interface DayDate {
-    day: string;
-  }
-
-  const generateNext7Days = (): DayDate[] => {
-    const days: DayDate[] = [];
-    const today = new Date();
-    
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      
-      days.push({
-        day: date.toLocaleString('en-US', { weekday: 'long' }),
-      });
-    }
-    
-    return days;
-  };
 
   const [availableDates, setAvailableDates] = useState<DayDate[]>(generateNext7Days());
 
@@ -138,22 +119,8 @@ function App() {
         <div className="chart-section">
           <div className="chart-header">
             <Typography variant="h6">This {dayOfWeek} {timeOfDay}</Typography>
-            {/* <div className="weather-icon">
-              {weatherData[0] && (
-                <>
-                  <img
-                    src={`/weather-icons/${weatherData[0].icon}.svg`}
-                    alt={weatherData[0].conditions}
-                    width="24"
-                    height="24"
-                  />
-                  <Typography>{weatherData[0].temperature}°F</Typography>
-                </>
-              )}
-            </div> */}
           </div>
           <WeatherDisplay
-            today={true}
             weatherData={weatherData} 
             selectedDate={availableDates.findIndex(d => d.day === dayOfWeek).toString()}
             timeOfDay={timeOfDay}
@@ -163,20 +130,6 @@ function App() {
         <div className="chart-section">
           <div className="chart-header">
             <Typography variant="h6">Next {dayOfWeek} {timeOfDay}</Typography>
-    
-            {/* <div className="weather-icon">
-              {weatherData[7] && (
-                <>
-                  <img
-                    src={`/weather-icons/${weatherData[7].icon}.svg`}
-                    alt={weatherData[7].conditions}
-                    width="24"
-                    height="24"
-                  />
-                  <Typography>{weatherData[7].temperature}°F</Typography>
-                </>
-              )}
-            </div> */}
           </div>
           <WeatherDisplay 
             weatherData={weatherData}
@@ -185,14 +138,28 @@ function App() {
           />
         </div>
       </div>)}
-
-      {weatherMessage.text && (
-        <Box mt={2}>
-          <Typography>{weatherMessage.text}</Typography>
-        </Box>
-      )}
     </div>
   );
 }
+
+interface DayDate {
+  day: string;
+}
+
+const generateNext7Days = (): DayDate[] => {
+  const days: DayDate[] = [];
+  const today = new Date();
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    
+    days.push({
+      day: date.toLocaleString('en-US', { weekday: 'long' }),
+    });
+  }
+  
+  return days;
+};
 
 export default App;
