@@ -46,8 +46,6 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
 
   const hourlyData = getTimeRangeData();
 
-  console.log(selectedDateData);
-
   return (
     <Box sx={{ width: '100%', height: 400 }}>
       <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, marginBottom: '15px' }}>
@@ -74,8 +72,27 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
               return `${hour12}${period}`;
             }}
           />
-          <YAxis yAxisId="left" dataKey="temperature" />
-          <YAxis yAxisId="right" orientation="right" dataKey="humidity" />
+          <YAxis 
+            yAxisId="left" 
+            dataKey="temperature"
+            label={{ 
+              value: 'Temperature (°F)', 
+              angle: -90, 
+              position: 'insideLeft',
+              style: { textAnchor: 'middle' }
+            }}
+          />
+          <YAxis 
+            yAxisId="right" 
+            orientation="right" 
+            dataKey="humidity"
+            label={{ 
+              value: 'Humidity (%)', 
+              angle: 90, 
+              position: 'insideRight',
+              style: { textAnchor: 'middle' }
+            }}
+          />
           <Tooltip />
           <Legend />
           <Line
