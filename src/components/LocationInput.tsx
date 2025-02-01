@@ -14,11 +14,11 @@ const LocationInput: React.FC<LocationInputProps> = ({
 }) => {
   const handleChange = (value: string) => {
     onLocationChange(value);
-    
+
     if (value.trim().length >= 3) {
       const timer = setTimeout(() => {
         onLocationSubmit(value);
-      }, 2000);
+      }, 3000);
 
       return () => clearTimeout(timer);
     }
