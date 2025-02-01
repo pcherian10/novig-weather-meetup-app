@@ -12,21 +12,17 @@ const LocationInput: React.FC<LocationInputProps> = ({
   onLocationChange,
   onLocationSubmit,
 }) => {
-  const [debouncedLocation, setDebouncedLocation] = useState(location);
+  const handleChange = (value: string) => {
+    onLocationChange(value);
+    
+    if (value.trim().length >= 3) {
+      const timer = setTimeout(() => {
+        onLocationSubmit(value);
+      }, 2000);
 
-  useEffect(() => {
-    setDebouncedLocation(location);
-  }, [location]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (debouncedLocation.trim().length >= 3) {
-        onLocationSubmit(debouncedLocation);
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [debouncedLocation, onLocationSubmit]);
+      return () => clearTimeout(timer);
+    }
+  };
 
   return (
     <Box>
@@ -34,7 +30,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
         label="Event Location"
         variant="outlined"
         value={location}
-        onChange={(e) => onLocationChange(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
         placeholder="Enter location (e.g., Central Park, New York)"
         fullWidth
       />
