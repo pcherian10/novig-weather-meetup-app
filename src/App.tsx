@@ -16,6 +16,7 @@ function App() {
   const [dayOfWeek, setDayOfWeek] = useState<string>(new Date().toLocaleString('en-US', { weekday: 'long' }));
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const [weatherMessage, setWeatherMessage] = useState<string>('');
 
 
   const [availableDates] = useState<DayDate[]>(generateNext7Days());
@@ -62,8 +63,8 @@ function App() {
       setWeatherData(processedData);
       setLocation(response?.data?.resolvedAddress || submittedLocation);
     } catch (error) {
+      setWeatherMessage('Error fetching weather data');
       console.error('Error fetching weather data:', error);
-
     }
   };
 
@@ -106,6 +107,7 @@ function App() {
           </FormControl>
         </div>
       </header>
+      <p>{weatherMessage}</p>
       {weatherData.length > 0 && (          
       <div className="charts-container">
         <div className="chart-section">
