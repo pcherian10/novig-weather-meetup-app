@@ -14,7 +14,7 @@ import './App.scss';
 
 function App() {
   const [location, setLocation] = useState<string>('');
-  const [dayOfWeek, setDayOfWeek] = useState<string>('Friday');
+  const [dayOfWeek, setDayOfWeek] = useState<string>(new Date()?.toLocaleString('en-US', { weekday: 'long' }));
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
@@ -42,7 +42,7 @@ function App() {
       .map((hour: any) => ({
         hour: hour.datetime,
         temperature: hour.temp,
-        humidity: hour.humidity
+        humidity: hour.humidity,
       }));
   };
 
@@ -52,12 +52,17 @@ function App() {
       const response = await axios.get(
         `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(
           submittedLocation
-        )}/next7days?unitGroup=us&include=hours&key=${API_KEY}`
+        )}/next14days?unitGroup=us&include=hours&key=${API_KEY}`
       );
+
+      if (!response.data || !response.data.days) {
+        throw new Error('Invalid response data');
+      }
 
       const processedData: WeatherData[] = response.data.days.map((day: any) => ({
         date: day.datetime,
         temperature: day.temp,
+        conditions: day.conditions,
         humidity: day.humidity,
         morningData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.morning.start, TIME_RANGES.morning.end),
         afternoonData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.afternoon.start, TIME_RANGES.afternoon.end),
@@ -116,7 +121,7 @@ function App() {
           </FormControl>
         </div>
       </header>
-
+      {weatherData.length > 0 && (          
       <div className="charts-container">
         <div className="chart-section">
           <div className="chart-header">
@@ -135,7 +140,8 @@ function App() {
               )}
             </div> */}
           </div>
-          <WeatherDisplay 
+          <WeatherDisplay
+            today={true}
             weatherData={weatherData} 
             selectedDay={dayOfWeek}
             timeOfDay={timeOfDay}
@@ -160,12 +166,12 @@ function App() {
             </div> */}
           </div>
           <WeatherDisplay 
-            weatherData={weatherData} 
+            weatherData={weatherData}
             selectedDay={dayOfWeek}
             timeOfDay={timeOfDay}
           />
         </div>
-      </div>
+      </div>)}
 
       {weatherMessage.text && (
         <Box mt={2}>

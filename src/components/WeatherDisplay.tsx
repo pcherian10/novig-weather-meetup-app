@@ -16,16 +16,21 @@ interface WeatherDisplayProps {
   weatherData: WeatherData[];
   selectedDay: string;
   timeOfDay: TimeOfDay;
+  today?: boolean;
 }
 
 const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
   weatherData,
   selectedDay,
   timeOfDay,
+  today,
 }) => {
-  const selectedDayData = weatherData?.find(
-    (day) => new Date(day.date).toLocaleDateString('en-US', { weekday: 'long' }) === selectedDay
-  );
+  if (!weatherData || weatherData.length === 0) {
+    return <Typography>Loading weather data...</Typography>;
+  }
+
+  console.log(weatherData);
+  const selectedDayData = today ? weatherData[0] : weatherData[7]
 
   if (!selectedDayData) {
     return <Typography>No data available for {selectedDay}</Typography>;
@@ -56,24 +61,29 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="hour" 
-            tickFormatter={(hour: string) => hour.split(':')[0] + ':00'}
+            tickFormatter={(hour: string) => {
+              const hourNum = parseInt(hour.split(':')[0]);
+              const period = hourNum >= 12 ? 'pm' : 'am';
+              const hour12 = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum;
+              return `${hour12}${period}`;
+            }}
           />
-          <YAxis yAxisId="left" />
-          <YAxis yAxisId="right" orientation="right" />
+          <YAxis yAxisId="left" dataKey="temperature" />
+          <YAxis yAxisId="right" orientation="right" dataKey="humidity" />
           <Tooltip />
           <Legend />
           <Line
             yAxisId="left"
             type="monotone"
             dataKey="temperature"
-            stroke="#8884d8"
+            stroke="#f44336"
             name="Temperature (°F)"
           />
           <Line
             yAxisId="right"
             type="monotone"
             dataKey="humidity"
-            stroke="#82ca9d"
+            stroke="#43d1f4"
             name="Humidity (%)"
           />
         </LineChart>
