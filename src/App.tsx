@@ -113,7 +113,7 @@ function App() {
             >
               {availableDates.map((dayDate) => (
                 <MenuItem key={dayDate.day} value={dayDate.day}>
-                  {dayDate.day}
+                  Every {dayDate.day}
                 </MenuItem>
               ))}
             </Select>
