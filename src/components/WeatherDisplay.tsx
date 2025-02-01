@@ -46,8 +46,24 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
 
   const hourlyData = getTimeRangeData();
 
+  console.log(selectedDateData);
+
   return (
     <Box sx={{ width: '100%', height: 400 }}>
+      <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+        <Typography>
+        {selectedDateData && (
+          <>
+            <img 
+              src={require(`../images/${selectedDateData.icon}.svg`)} 
+              alt={selectedDateData.conditions}
+              style={{ width: '30px', height: '30px' }}
+            />
+            <Typography>{selectedDateData.conditions}</Typography>
+          </>
+        )}
+        </Typography>
+      </Typography>
       <ResponsiveContainer>
         <LineChart data={hourlyData}>
           <CartesianGrid strokeDasharray="3 3" />

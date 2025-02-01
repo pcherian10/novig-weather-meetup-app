@@ -1,4 +1,6 @@
 export interface WeatherData {
+  icon: string;
+  conditions: string;
   date: string;
   temperature: number;
   humidity: number;

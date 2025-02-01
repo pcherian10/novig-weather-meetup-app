@@ -3,18 +3,7 @@ export interface WeatherData {
   temperature: number;
   conditions: string;
   icon: string;
-  windSpeed: number;
-  precipitationChance: number;
   humidity: number;
-}
-
-export interface EventSettings {
-  location: string;
-  dayOfWeek: string;
-  timeRange: {
-    start: string;
-    end: string;
-  };
 }
 
 export interface WeatherMessage {

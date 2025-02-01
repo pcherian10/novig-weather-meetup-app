@@ -57,6 +57,7 @@ function App() {
         temperature: day.temp,
         conditions: day.conditions,
         humidity: day.humidity,
+        icon: day.icon,
         morningData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.morning.start, TIME_RANGES.morning.end),
         afternoonData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.afternoon.start, TIME_RANGES.afternoon.end),
         eveningData: getHourlyDataForTimeRange(day.hours, TIME_RANGES.evening.start, TIME_RANGES.evening.end)
@@ -64,9 +65,6 @@ function App() {
 
       setWeatherData(processedData);
       setLocation(submittedLocation);
-      setWeatherMessage({
-        text: response.data.description,
-      });
     } catch (error) {
       console.error('Error fetching weather data:', error);
       setWeatherMessage({
