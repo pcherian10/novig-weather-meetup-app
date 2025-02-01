@@ -60,7 +60,7 @@ function App() {
       }));
 
       setWeatherData(processedData);
-      setLocation(response.data.resolvedAddress);
+      setLocation(response?.data?.resolvedAddress || submittedLocation);
     } catch (error) {
       console.error('Error fetching weather data:', error);
 
