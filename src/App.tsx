@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Box,
   Typography,
   FormControl,
   Select,
@@ -8,7 +7,7 @@ import {
 } from '@mui/material';
 import LocationInput from './components/LocationInput';
 import WeatherDisplay from './components/WeatherDisplay';
-import { WeatherData, WeatherMessage, TimeOfDay, TIME_RANGES } from './types';
+import { WeatherData,TimeOfDay, TIME_RANGES } from './types';
 import axios from 'axios';
 import './App.scss';
 
@@ -17,12 +16,9 @@ function App() {
   const [dayOfWeek, setDayOfWeek] = useState<string>(new Date().toLocaleString('en-US', { weekday: 'long' }));
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-  const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
-    text: '',
-  });
 
 
-  const [availableDates, setAvailableDates] = useState<DayDate[]>(generateNext7Days());
+  const [availableDates] = useState<DayDate[]>(generateNext7Days());
 
   const timesOfDay: TimeOfDay[] = ['morning', 'afternoon', 'evening'];
 
@@ -67,9 +63,7 @@ function App() {
       setLocation(submittedLocation);
     } catch (error) {
       console.error('Error fetching weather data:', error);
-      setWeatherMessage({
-        text: 'Error fetching weather data. Please try again.',
-      });
+
     }
   };
 
