@@ -14,35 +14,34 @@ import {
 
 interface WeatherDisplayProps {
   weatherData: WeatherData[];
-  selectedDay: string;
+  selectedDate: string;
   timeOfDay: TimeOfDay;
   today?: boolean;
 }
 
 const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
   weatherData,
-  selectedDay,
+  selectedDate,
   timeOfDay,
-  today,
 }) => {
   if (!weatherData || weatherData.length === 0) {
     return <Typography>Loading weather data...</Typography>;
   }
 
-  const selectedDayData = today ? weatherData[0] : weatherData[7]
+  const selectedDateData = weatherData[parseInt(selectedDate)];
 
-  if (!selectedDayData) {
-    return <Typography>No data available for {selectedDay}</Typography>;
+  if (!selectedDateData) {
+    return <Typography>No data available for selected date</Typography>;
   }
 
   const getTimeRangeData = () => {
     switch (timeOfDay) {
       case 'morning':
-        return selectedDayData.morningData || [];
+        return selectedDateData.morningData || [];
       case 'afternoon':
-        return selectedDayData.afternoonData || [];
+        return selectedDateData.afternoonData || [];
       case 'evening':
-        return selectedDayData.eveningData || [];
+        return selectedDateData.eveningData || [];
       default:
         return [];
     }

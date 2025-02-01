@@ -14,22 +14,34 @@ import './App.scss';
 
 function App() {
   const [location, setLocation] = useState<string>('');
-  const [dayOfWeek, setDayOfWeek] = useState<string>(new Date()?.toLocaleString('en-US', { weekday: 'long' }));
+  const [dayOfWeek, setDayOfWeek] = useState<string>(new Date().toLocaleString('en-US', { weekday: 'long' }));
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('afternoon');
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [weatherMessage, setWeatherMessage] = useState<WeatherMessage>({
     text: '',
   });
 
-  const daysOfWeek = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
+  interface DayDate {
+    day: string;
+  }
+
+  const generateNext7Days = (): DayDate[] => {
+    const days: DayDate[] = [];
+    const today = new Date();
+    
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      
+      days.push({
+        day: date.toLocaleString('en-US', { weekday: 'long' }),
+      });
+    }
+    
+    return days;
+  };
+
+  const [availableDates, setAvailableDates] = useState<DayDate[]>(generateNext7Days());
 
   const timesOfDay: TimeOfDay[] = ['morning', 'afternoon', 'evening'];
 
@@ -99,9 +111,9 @@ function App() {
               onChange={(e) => setDayOfWeek(e.target.value)}
               displayEmpty
             >
-              {daysOfWeek.map((day) => (
-                <MenuItem key={day} value={day}>
-                  {day.charAt(0).toUpperCase() + day.slice(1)}
+              {availableDates.map((dayDate) => (
+                <MenuItem key={dayDate.day} value={dayDate.day}>
+                  {dayDate.day}
                 </MenuItem>
               ))}
             </Select>
@@ -143,7 +155,7 @@ function App() {
           <WeatherDisplay
             today={true}
             weatherData={weatherData} 
-            selectedDay={dayOfWeek}
+            selectedDate={availableDates.findIndex(d => d.day === dayOfWeek).toString()}
             timeOfDay={timeOfDay}
           />
         </div>
@@ -151,6 +163,7 @@ function App() {
         <div className="chart-section">
           <div className="chart-header">
             <Typography variant="h6">Next {dayOfWeek} {timeOfDay}</Typography>
+    
             {/* <div className="weather-icon">
               {weatherData[7] && (
                 <>
@@ -167,7 +180,7 @@ function App() {
           </div>
           <WeatherDisplay 
             weatherData={weatherData}
-            selectedDay={dayOfWeek}
+            selectedDate={(availableDates.findIndex(d => d.day === dayOfWeek) + 7).toString()}
             timeOfDay={timeOfDay}
           />
         </div>
