@@ -100,10 +100,17 @@ $mobile: 480px;
     display: flex;
     gap: 30px;
     justify-content: space-between;
+    padding: 0 20px;
 
     @include tablet-and-below {
       flex-direction: column;
       gap: 20px;
+      padding: 0;
+      align-items: center;
+
+      .chart-section {
+        max-width: 600px;
+      }
     }
 
     .chart-section {
