@@ -50,8 +50,7 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
-      <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-        <Typography>
+      <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, marginBottom: '15px' }}>
         {selectedDateData && (
           <>
             <img 
@@ -62,7 +61,6 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
             <Typography>{selectedDateData.conditions}</Typography>
           </>
         )}
-        </Typography>
       </Typography>
       <ResponsiveContainer>
         <LineChart data={hourlyData}>
