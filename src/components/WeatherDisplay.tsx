@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, LinearProgress } from '@mui/material';
 import { WeatherData, TimeOfDay } from '../types';
 import {
   LineChart,
@@ -24,9 +24,6 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
   selectedDate,
   timeOfDay,
 }) => {
-  if (!weatherData || weatherData.length === 0) {
-    return <Typography>Loading weather data...</Typography>;
-  }
 
   const selectedDateData = weatherData[parseInt(selectedDate)];
 
