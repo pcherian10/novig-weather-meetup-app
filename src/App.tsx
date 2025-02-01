@@ -72,7 +72,7 @@ function App() {
       setWeatherData(processedData);
       setLocation(submittedLocation);
       setWeatherMessage({
-        text: response.data.description || 'Weather data retrieved successfully',
+        text: response.data.description,
       });
     } catch (error) {
       console.error('Error fetching weather data:', error);
@@ -125,7 +125,7 @@ function App() {
       <div className="charts-container">
         <div className="chart-section">
           <div className="chart-header">
-            <Typography variant="h6">This {dayOfWeek}</Typography>
+            <Typography variant="h6">This {dayOfWeek} {timeOfDay}</Typography>
             {/* <div className="weather-icon">
               {weatherData[0] && (
                 <>
@@ -150,7 +150,7 @@ function App() {
 
         <div className="chart-section">
           <div className="chart-header">
-            <Typography variant="h6">Next {dayOfWeek}</Typography>
+            <Typography variant="h6">Next {dayOfWeek} {timeOfDay}</Typography>
             {/* <div className="weather-icon">
               {weatherData[7] && (
                 <>

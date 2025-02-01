@@ -29,7 +29,6 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
     return <Typography>Loading weather data...</Typography>;
   }
 
-  console.log(weatherData);
   const selectedDayData = today ? weatherData[0] : weatherData[7]
 
   if (!selectedDayData) {
@@ -53,9 +52,6 @@ const WeatherDisplay: React.FC<WeatherDisplayProps> = ({
 
   return (
     <Box sx={{ width: '100%', height: 400 }}>
-      <Typography variant="h6" gutterBottom>
-        {selectedDay} - {timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Weather
-      </Typography>
       <ResponsiveContainer>
         <LineChart data={hourlyData}>
           <CartesianGrid strokeDasharray="3 3" />

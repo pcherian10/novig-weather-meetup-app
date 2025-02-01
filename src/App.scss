@@ -120,6 +120,7 @@ $mobile: 480px;
       border-radius: 8px;
       background-color: $background-white;
       box-shadow: 0 2px 4px $shadow-color;
+      min-height: 500px;
 
       @include tablet-and-below {
         width: 100%;
@@ -140,6 +141,7 @@ $mobile: 480px;
       .chart {
         width: 100%;
         height: 300px;
+        margin-bottom: 20px;
       }
     }
   }
