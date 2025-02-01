@@ -53,26 +53,10 @@ $mobile: 480px;
 
       @include tablet-and-below {
         width: 100%;
-        
-        form {
-          width: 100%;
-          display: flex;
-          gap: 8px;
-
-          input {
-            flex: 1;
-          }
-
-          button {
-            flex-shrink: 0;
-          }
-        }
       }
 
-      form {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+      .MuiTextField-root {
+        width: 100%;
       }
     }
   
